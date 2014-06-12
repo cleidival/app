@@ -1,6 +1,5 @@
 
 Documentation
-Basic Usage Examples
 
 $(document).ready(function(){
   $('.date').mask('11/11/1111');
