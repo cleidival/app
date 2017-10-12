@@ -949,11 +949,13 @@ protected void confirmarAlteracaoFiltros(string codigos_produtos, string classe,
     protected void atualizarMovimentoProdServ(string txtOrdemMovimentoProdServ, string ncm_nbs, string perc_federal_nacional, string perc_federal_importado, string perc_estadual, string perc_municipal, string chave, string fonte){
 	try{
             string sql = @"update movimento_prod_serv set ordem_ncm=(select top 1 ordem from ncm where codigo='"+ncm_nbs+"'), ncm='"+ncm_nbs+"', carga_tributaria_federal_perc='"+perc_federal_nacional+"', carga_tributaria_estadual_perc='"+perc_estadual+"', carga_tributaria_municipal_perc='"+perc_municipal+"', carga_tributaria_fonte2='"+fonte+"' where ordem='"+txtOrdemMovimentoProdServ+"'";
+			
+            
 	    //Response.Write(sql);
             cmd = new SqlCommand(sql, con);	        
             con.Close();
             con.Open();			
-	    cmd.ExecuteNonQuery();            
+			cmd.ExecuteNonQuery();            
             con.Close(); 
 	}
         catch (SqlException ex) { Response.Write("Erro: " + ex.ToString()); }	
@@ -1507,7 +1509,7 @@ protected void totaisCaixas(string filial, string caixa, string data_inicial, st
 			string sql = @"select mf.ordem, mv.sequencia, mv.Tipo_Operacao, mf.Modelo, mf.data_emissao, mf.Numero, mf.chave_acesso, mf.numero_recibo, mf.Protocolo_Autorizacao, "+
 						" mv.Preco_Final_Somado, status_cancelamento = (case xml_cancelamento when '' then '' else 'C' end) from movimento mv inner join movimento_documentos_fiscais mf "+
 						" on mv.ordem=mf.ordem_movimento left join filiais fl on mv.ordem_filial=fl.ordem "+
-						" where  mf.Protocolo_Autorizacao='' and (mv.Tipo_Operacao='vnd' or mv.Tipo_Operacao='vef') and mf.data_emissao between CONVERT(datetime,'"+data_inicial+"',121) and CONVERT(datetime,'"+data_final+"',121) and fl.codigo='"+filial+"' "+
+						" where  mf.Protocolo_Autorizacao=''  and (mf.Documento_Inutilizado is null) and (mv.Tipo_Operacao='vnd' or mv.Tipo_Operacao='vef') and mf.data_emissao between CONVERT(datetime,'"+data_inicial+"',121) and CONVERT(datetime,'"+data_final+"',121) and fl.codigo='"+filial+"' "+
 						" order by mf.data_emissao desc";
 
 			//Response.Write(sql);
