@@ -1539,6 +1539,51 @@ protected void totaisCaixas(string filial, string caixa, string data_inicial, st
 			}catch(Exception ex){Response.Write("Nada foi alterado!");}	
 		}
 	}
+	
+	protected void RelatorioFinanceiroCustoReceitas(string filial, string data_inicial, string data_final){
+		
+		if(Request.QueryString["data_inicial"]!=""){
+			data_inicial = String.Format("{0:yyyy-MM-dd}", Convert.ToDateTime(Request.QueryString["data_inicial"]))+ " 00:00:00";
+		}
+		if(Request.QueryString["data_final"]!=""){			
+			data_final = String.Format("{0:yyyy-MM-dd}", Convert.ToDateTime(Request.QueryString["data_final"]))+" 23:59:59";
+		}
+
+		if(filial!=null){
+			
+			string sql = @"select mf.ordem, mv.sequencia, mv.Tipo_Operacao, mf.Modelo, mf.data_emissao, mf.Numero, mf.chave_acesso, mf.numero_recibo, mf.Protocolo_Autorizacao, "+
+						" mv.Preco_Final_Somado, status_cancelamento = (case xml_cancelamento when '' then '' else 'C' end) from movimento mv inner join movimento_documentos_fiscais mf "+
+						" on mv.ordem=mf.ordem_movimento left join filiais fl on mv.ordem_filial=fl.ordem "+
+						" where  mf.Protocolo_Autorizacao=''  and (mf.Documento_Inutilizado is null) and (mv.Tipo_Operacao='vnd' or mv.Tipo_Operacao='vef') and mf.data_emissao between CONVERT(datetime,'"+data_inicial+"',121) and CONVERT(datetime,'"+data_final+"',121) and fl.codigo='"+filial+"' "+
+						" order by mf.data_emissao desc";
+
+			//Response.Write(sql);
+			string nome_filial = filial + " - " +getNomeFiltro("filiais",filial);
+			try{
+				cmd = new SqlCommand(sql, con);
+				con.Close();
+				con.Open();
+				rdr = cmd.ExecuteReader();
+				if(rdr.HasRows){
+					Response.Write("<table class='table table-hover'>");
+					Response.Write("<thead>");
+					Response.Write("<tr><th colspan='9'>");
+					Response.Write("<p>Filial: <b>"+nome_filial+"</b></p>");
+					Response.Write("<p>Data Inicial: <b>"+String.Format("{0:dd/MM/yyyy}", Convert.ToDateTime(data_inicial))+"</b>  Data Final: <b>"+String.Format("{0:dd/MM/yyyy}", Convert.ToDateTime(data_final))+"</b></p></tr>");
+					Response.Write("<tr><th>Data</th><th>Filial</th><th>Sequencia</th><th>Modelo</th><th>Chave NFC-e</th><th>Nº NFC-e</th><th>Prot. Autorização</th><th>Valor</th><th>Status</th></tr>");
+					Response.Write("</thead>");
+					Response.Write("<tbody>");
+					while(rdr.Read()){
+						Response.Write("<tr><td>"+rdr["data_emissao"].ToString()+"</td><td>"+nome_filial+"</td><td><a href='AlteraDadosNFCe.aspx?txtFilial="+filial+"&txtSequencia="+rdr["sequencia"].ToString()+"' target='_blank'><i class='glyphicon glyphicon-new-window'></i>&nbsp;"+rdr["sequencia"].ToString()+" </a></td><td>"+rdr["modelo"].ToString()+"</td><td>"+rdr["chave_acesso"].ToString()+"</td><td>"+rdr["numero"].ToString()+"</td><td>"+rdr["protocolo_autorizacao"].ToString()+"</td><td align='right'>"+String.Format("{0:C2}",Convert.ToDecimal(rdr["preco_final_somado"].ToString()))+"</td><td>"+rdr["status_cancelamento"].ToString()+"</td></tr>");	
+					}
+					Response.Write("<tbody>");
+					Response.Write("</table>");
+				}else{Response.Write("<h5>Nada foi localizado!</h5>");}
+				rdr.Close();
+				con.Close();
+			}catch(Exception ex){Response.Write("Nada foi alterado!");}	
+		}
+	}
 
 }
 

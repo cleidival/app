@@ -1,0 +1,1 @@
+SELECT CONCAT(CODIGO,'|', CODIGO_BARRAS, '|', NOME) AS PRODUTO FROM PROD_SERV where codigo_barras<>''

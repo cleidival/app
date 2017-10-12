@@ -1,0 +1,23 @@
+"c:\program files\ultravnc\winvnc" -autoreconnect -connect 12.34.56.78
+
+
+ublic partial class _Default : System.Web.UI.Page
+{
+    Process app = new Process();
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        app.StartInfo.FileName = @"D:/Path to /My/Program to be run.exe";
+        app.Start();
+    }
+}
+
+
+ProcessStartInfo psi = new ProcessStartInfo();
+psi.FileName = @"D:/Path to /My/Program to be run.exe";
+psi.WorkingDirectory = IO.Path.GetDirectoryName(psi.FileName);
+Diagnostics.Process.Start(psi);
+
+
+var shell = new ActiveXObject("Shell.Application");
+var appExe =  @"D:/Path to /My/Program to be run.exe";
+shell.ShellExecute(appExe , "", "", "open", "1");

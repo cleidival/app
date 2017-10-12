@@ -43,7 +43,7 @@
 		<div class="row main">
 			<div class="panel-heading">
 				<div class="panel-title text-center">
-					<h3 class="title">Login</h3>
+					<h3 class="title">Entrar</h3>
 				</div>
 			</div>
 		</div>
@@ -52,7 +52,7 @@
 				
 
 				<div class="form-group">
-					<label for="txt_nome_usuario" class="cols-sm-2 control-label">Username</label>
+					<label for="txt_nome_usuario" class="cols-sm-2 control-label">Usuário</label>
 					<div class="cols-sm-10">
 						<div class="input-group">
 							<span class="input-group-addon"><i class="glyphicon glyphicon-user" aria-hidden="true"></i></span>

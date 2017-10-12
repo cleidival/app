@@ -1,0 +1,2 @@
+select mf.ordem, mv.sequencia, mv.Tipo_Operacao, mf.Modelo, mf.data_emissao, mf.Numero, mf.chave_acesso, mf.numero_recibo, mf.Protocolo_Autorizacao, mv.Preco_Final_Somado from movimento mv inner join movimento_documentos_fiscais mf on mv.ordem=mf.ordem_movimento where mf.Protocolo_Autorizacao='' and
+ (mv.Tipo_Operacao='vnd' or mv.Tipo_Operacao='vef') and mf.data_emissao between '2017-10-08 00:00:00' and '2017-10-09 23:59:59' order by mf.ordem
